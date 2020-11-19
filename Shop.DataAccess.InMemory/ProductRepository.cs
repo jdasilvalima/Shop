@@ -14,7 +14,7 @@ namespace Shop.DataAccess.InMemory
         List<Product> products;
 
         //Objet complexe on initialise dans le constructeur
-        public ProductRepository(ObjectCache cache)
+        public ProductRepository()
         {
             products = cache["products"] as List<Product>;
             if (products == null)
