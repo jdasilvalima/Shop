@@ -1,4 +1,5 @@
 ﻿using Shop.Core.Models;
+using Shop.Core.ViewModels;
 using Shop.DataAccess.InMemory;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace Shop.WebUI.Controllers
         //We selected an empty Controller - we also created one by one ProductManager Views
 
         ProductRepository context;
+        ProductCategoryRepository contextCategory;
 
         public ProductManagerController()
         {
             context = new ProductRepository();
+            contextCategory = new ProductCategoryRepository();
         }
 
 
@@ -29,21 +32,32 @@ namespace Shop.WebUI.Controllers
 
         public ActionResult Create()
         {
-            Product p = new Product();
-            return View(p);
+
+
+            //Product p = new Product();
+
+            //Créer objet intermédiaire pour envoyer 2 objets à une Vue - car ne peut pas transmettre deux objets à une vue
+            //ProductCategoryViewModel >> classe avec plusieurs objets qui permet d'envoyer plusieurs
+            ProductCategoryViewModel viewModel = new ProductCategoryViewModel();
+            viewModel.Product = new Product();
+            viewModel.ProductCategories = contextCategory.Collection();
+            return View(viewModel);
         }
 
+        //Par défault le binding ne fonctionne pas à cause la classe intermédiaire > il faut ajouter un intermédiaire
+        //soit écrire "Product product" : paramètre avec le même nom que la classe
+        //Soit ajouter [Bind(Product p)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Product p)
+        public ActionResult Create(Product product)
         {
             if (!ModelState.IsValid)
             {
-                return View(p);
+                return View(product);
             }
             else
             {
-                context.Insert(p);
+                context.Insert(product);
                 context.Commit();
                 return RedirectToAction("Index");
             }
@@ -61,10 +75,13 @@ namespace Shop.WebUI.Controllers
                 }
                 else
                 {
-                    return View(p);
+                    ProductCategoryViewModel viewModel = new ProductCategoryViewModel();
+                    viewModel.Product = p;
+                    viewModel.ProductCategories = contextCategory.Collection();
+                    return View(viewModel);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 return HttpNotFound();
@@ -73,7 +90,7 @@ namespace Shop.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Product p, int id)
+        public ActionResult Edit(Product product, int id)
         {
             Product pToEdit = context.FindById(id);
             try
@@ -92,11 +109,11 @@ namespace Shop.WebUI.Controllers
                     else
                     {
                         //context.Update(pToEdit); //Pas de BDD donc doit définir les paramètres de facon explicite
-                        pToEdit.Name = p.Name;
-                        pToEdit.Description = p.Description;
-                        pToEdit.Category = p.Category;
-                        pToEdit.Price = p.Price;
-                        pToEdit.Image = p.Image;
+                        pToEdit.Name = product.Name;
+                        pToEdit.Description = product.Description;
+                        pToEdit.Category = product.Category;
+                        pToEdit.Price = product.Price;
+                        pToEdit.Image = product.Image;
 
                         context.Commit();
                         return RedirectToAction("Index");
