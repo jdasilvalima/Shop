@@ -13,13 +13,15 @@ namespace Shop.WebUI.Controllers
     {
         //We selected an empty Controller - we also created one by one ProductManager Views
 
-        ProductRepository context;
-        ProductCategoryRepository contextCategory;
+        InMemoryRepository<Product> context;
+        //ProductRepository context;
+        InMemoryRepository<ProductCategory> contextCategory;
+        //ProductCategoryRepository contextCategory;
 
         public ProductManagerController()
         {
-            context = new ProductRepository();
-            contextCategory = new ProductCategoryRepository();
+            context = new InMemoryRepository<Product>();
+            contextCategory = new InMemoryRepository<ProductCategory>();
         }
 
 
