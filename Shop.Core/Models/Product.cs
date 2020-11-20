@@ -18,6 +18,7 @@ namespace Shop.Core.Models
         [Range(0, 500)]
         public double Price { get; set; } //decimal
         public string Category { get; set; }
+        [Required]
         public string Image { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Shop.Core.Models;
 using Shop.DataAccess.InMemory;
+using Shop.DataAccess.SQL;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,14 @@ namespace Shop.WebUI.Controllers
 {
     public class ProductCategoryController : Controller
     {
-        InMemoryRepository<ProductCategory> context;
+        //InMemoryRepository<ProductCategory> context;
+
+        //WithEF - avec DB - final repository
+        SQLRepository<ProductCategory> context;
 
         public ProductCategoryController()
         {
-            context = new InMemoryRepository<ProductCategory>();
+            context = new SQLRepository<ProductCategory>(new MyContext());
         }
 
 
@@ -72,32 +76,34 @@ namespace Shop.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(ProductCategory p, int id)
         {
-            ProductCategory catToEdit = context.FindById(id);
-            try
-            {
-                if (catToEdit == null)
-                {
-                    return HttpNotFound();
-                }
-                else
-                {
+            //ProductCategory catToEdit = context.FindById(id);
+            //try
+            //{
+            //    if (catToEdit == null)
+            //    {
+            //        return HttpNotFound();
+            //    }
+            //    else
+            //    {
                     if (!ModelState.IsValid)
                     {
-                        return View(catToEdit);
+                        return View(p);
                     }
                     else
                     {
                         //context.Update(pToEdit);
-                        catToEdit.Category = p.Category;
+                        context.Update(p);
+                        context.Commit();
+                        //catToEdit.Category = p.Category;
                         return RedirectToAction("Index");
                     }
-                }
-            }
-            catch (Exception)
-            {
+            //    }
+            //}
+            //catch (Exception)
+            //{
 
-                return HttpNotFound();
-            }
+            //    return HttpNotFound();
+            //}
         }
 
         public ActionResult Delete(int id)
