@@ -11,6 +11,8 @@ namespace Shop.DataAccess.InMemory
 {
     public class InMemoryRepository<T> : IRepository<T> where T : BaseEntity
     {
+        //utilise le cache d'une application dans le DOT.net pour pouvoir mettre en place l'application > sera supprimé lors de l'EF
+        //Control pour tester les controllers aussi
         ObjectCache cache = MemoryCache.Default;
         List<T> items;
         string className;
