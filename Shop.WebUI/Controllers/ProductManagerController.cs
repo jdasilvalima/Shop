@@ -1,8 +1,10 @@
 ﻿using Shop.Core.Models;
 using Shop.Core.ViewModels;
 using Shop.DataAccess.InMemory;
+using Shop.DataAccess.SQL;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,15 +15,23 @@ namespace Shop.WebUI.Controllers
     {
         //We selected an empty Controller - we also created one by one ProductManager Views
 
-        InMemoryRepository<Product> context;
-        //ProductRepository context;
-        InMemoryRepository<ProductCategory> contextCategory;
-        //ProductCategoryRepository contextCategory;
+        ////Repository avec cache
+        //InMemoryRepository<Product> context;
+        ////ProductRepository context;
+        //InMemoryRepository<ProductCategory> contextCategory;
+        ////ProductCategoryRepository contextCategory;
+
+        //WithEF - avec DB - final repository
+        SQLRepository<Product> context;
+        SQLRepository<ProductCategory> contextCategory;
+
 
         public ProductManagerController()
         {
-            context = new InMemoryRepository<Product>();
-            contextCategory = new InMemoryRepository<ProductCategory>();
+            //context = new InMemoryRepository<Product>();
+            //contextCategory = new InMemoryRepository<ProductCategory>();
+            context = new SQLRepository<Product>(new MyContext());
+            contextCategory = new SQLRepository<ProductCategory>(new MyContext());
         }
 
 
@@ -51,7 +61,7 @@ namespace Shop.WebUI.Controllers
         //Soit ajouter [Bind(Product p)]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Product product)
+        public ActionResult Create(Product product, HttpPostedFileBase file)
         {
             if (!ModelState.IsValid)
             {
@@ -59,6 +69,11 @@ namespace Shop.WebUI.Controllers
             }
             else
             {
+                if (file != null)
+                {
+                    product.Image = product.Id + Path.GetExtension(file.FileName);
+                    file.SaveAs(Server.MapPath("~/Content/ProdImage/") + product.Image);
+                }
                 context.Insert(product);
                 context.Commit();
                 return RedirectToAction("Index");
@@ -92,42 +107,53 @@ namespace Shop.WebUI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(Product product, int id)
+        public ActionResult Edit(Product product, int id, HttpPostedFileBase file)
         {
-            Product pToEdit = context.FindById(id);
-            try
-            {
-                if (pToEdit == null)
-                {
-                    return HttpNotFound();
-                }
-                else
-                {
+            //Product pToEdit = context.FindById(id);
+            //try
+            //{
+            //    if (pToEdit == null)
+            //    {
+            //        return HttpNotFound();
+            //    }
+            //    else
+            //    {
                     if (!ModelState.IsValid)
                     {
                         //Retourne meme page avec produit non valide
-                        return View(pToEdit);
+                        return View(product);
                     }
                     else
                     {
-                        //context.Update(pToEdit); //Pas de BDD donc doit définir les paramètres de facon explicite
-                        pToEdit.Name = product.Name;
-                        pToEdit.Description = product.Description;
-                        pToEdit.Category = product.Category;
-                        pToEdit.Price = product.Price;
-                        pToEdit.Image = product.Image;
+
+                //context.Update(pToEdit); //Pas de BDD donc doit définir les paramètres de facon explicite
+                //pToEdit.Name = product.Name;
+                //pToEdit.Description = product.Description;
+                //pToEdit.Category = product.Category;
+                //pToEdit.Price = product.Price;
+                //pToEdit.Image = product.Image;
+
+
+                    if (file != null)
+                    {
+                        product.Image = product.Id + Path.GetExtension(file.FileName);
+                        file.SaveAs(Server.MapPath("~/Content/ProdImage/") + product.Image);
+                    }
+
+
+                    context.Update(product);
 
                         context.Commit();
                         return RedirectToAction("Index");
                     }
-                }
-            }
-            catch (Exception)
-            {
-
-                return HttpNotFound();
-            }
         }
+        //}
+        //catch (Exception)
+        //{
+
+        //    return HttpNotFound();
+        //}
+    //}
 
         public ActionResult Delete(int id)
         {
