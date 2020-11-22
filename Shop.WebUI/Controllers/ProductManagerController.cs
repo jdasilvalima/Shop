@@ -2,6 +2,7 @@
 using Shop.Core.ViewModels;
 using Shop.DataAccess.InMemory;
 using Shop.DataAccess.SQL;
+using Shop.WebUI.Filters;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,7 @@ using System.Web.Mvc;
 
 namespace Shop.WebUI.Controllers
 {
+    [LoginFilter]
     public class ProductManagerController : Controller
     {
         //We selected an empty Controller - we also created one by one ProductManager Views
