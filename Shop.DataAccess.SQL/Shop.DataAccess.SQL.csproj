@@ -57,6 +57,10 @@
     <Compile Include="Migrations\202011201019369_InitialModel.designer.cs">
       <DependentUpon>202011201019369_InitialModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202011202143055_addUserModel.cs" />
+    <Compile Include="Migrations\202011202143055_addUserModel.designer.cs">
+      <DependentUpon>202011202143055_addUserModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MyContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,6 +106,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\202011201019369_InitialModel.resx">
       <DependentUpon>202011201019369_InitialModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202011202143055_addUserModel.resx">
+      <DependentUpon>202011202143055_addUserModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -28,13 +28,13 @@
                 <ul class="nav navbar-nav navbar-right">
                     @if (Session["user_id"] == null)
                     {
-                        <li>@Html.ActionLink("Login", "Login", "Login")</li>
+                        <li>@Html.ActionLink("Login", "Index", "Login")</li>
                     }
                     else
                     {
                         <li>@Html.ActionLink("Logout", "Logout", "Login")</li>
                     }
-                    <li>@Html.ActionLink("Create account", "Create", "Login")</li>
+                    <li>@Html.ActionLink("Create account", "Create", "User")</li>
 
                 </ul>
             </div>

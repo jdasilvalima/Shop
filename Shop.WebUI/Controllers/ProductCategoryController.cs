@@ -1,6 +1,7 @@
 ﻿using Shop.Core.Models;
 using Shop.DataAccess.InMemory;
 using Shop.DataAccess.SQL;
+using Shop.WebUI.Filters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Web.Mvc;
 
 namespace Shop.WebUI.Controllers
 {
+    [LoginFilter]
     public class ProductCategoryController : Controller
     {
         //InMemoryRepository<ProductCategory> context;
